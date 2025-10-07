@@ -5,7 +5,7 @@ import bgImg from './components/background.jpg';
 
 export default function PersonalityFormPage() {
   const navigate = useNavigate();
-  const location = useLocation(); // 監聽路由變化
+  const location = useLocation(); 
   const [username, setUsername] = useState('');
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
@@ -122,7 +122,7 @@ export default function PersonalityFormPage() {
     padding: '20px 0',
     backgroundColor: 'rgba(255,255,255,0.9)',
     textAlign: 'center',
-    fontSize: '0.9em',
+    fontSize: windowWidth < 500 ? '0.8rem' : '0.9rem',
     color: '#242322ff'
   };
 
@@ -132,7 +132,8 @@ export default function PersonalityFormPage() {
     color:'#fff',
     border:'none',
     borderRadius:'6px',
-    cursor:'pointer'
+    cursor:'pointer',
+    whiteSpace:'nowrap'
   };
 
   const navBtnStyle = {
@@ -148,9 +149,9 @@ export default function PersonalityFormPage() {
   };
 
   const cardStyle = {
-    width:'90%',
+    width: windowWidth < 500 ? '95%' : '90%',
     maxWidth:'720px',
-    padding:'20px 25px',
+    padding: windowWidth < 500 ? '15px 20px' : '20px 25px',
     background:'#fff',
     borderRadius:'20px',
     boxShadow:'0 12px 25px rgba(0,0,0,0.12)',
@@ -183,26 +184,26 @@ export default function PersonalityFormPage() {
       <div style={{
         position: 'fixed', top: 0, left: 0, width: '100%',
         background: 'rgba(255,255,255,0.85)',
-        padding: '20px 30px',
+        padding: windowWidth < 500 ? '15px 20px' : '20px 40px',
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         zIndex: 100,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <h1 style={{ margin: 0, color: '#8B4513', fontWeight: '700', fontSize: windowWidth < 500 ? '2rem' : '2.5rem' }}>AI 履歷健診</h1>
+        <h1 style={{ margin: 0, color: '#6F4E37', fontWeight: '700', fontSize: windowWidth < 500 ? '2rem' : '2rem' }}>AI 履歷健診</h1>
 
         {/* 右上角頭像 + 狀態 + 登出 */}
         <div style={{
           display:'flex',
           alignItems:'center',
-          gap:'8px',
-          marginRight: windowWidth < 500 ? '10px' : '40px',
+          gap: windowWidth < 500 ? '5px' : '8px',
+          marginRight: windowWidth < 500 ? '10px' : '80px',
           flexShrink:0
         }}>
           <div style={{
-            width: "40px",
-            height: "40px",
+            width: windowWidth < 500 ? "35px" : "40px",
+            height: windowWidth < 500 ? "35px" : "40px",
             borderRadius: "50%",
             backgroundColor: avatarColor,
             color: "white",
@@ -210,13 +211,13 @@ export default function PersonalityFormPage() {
             alignItems: "center",
             justifyContent: "center",
             fontWeight: "bold",
-            fontSize: "18px",
+            fontSize: windowWidth < 500 ? "16px" : "18px",
           }}>{username ? username.charAt(0).toUpperCase() : "?"}</div>
           <div style={{ textAlign:'left' }}>
-            <div style={{ fontWeight: '600' }}>{username}</div>
-            <div style={{ fontSize: '0.9rem', color: 'green' }}><b>狀態：在線</b></div>
+            <div style={{ fontWeight: '600', fontSize: windowWidth < 500 ? '0.85rem' : '1rem' }}>{username}</div>
+            <div style={{ fontSize: windowWidth < 500 ? '0.75rem' : '0.9rem', color: 'green' }}><b>狀態：在線</b></div>
           </div>
-          <button onClick={handleLogout} style={{ ...btnStyle, whiteSpace:'nowrap' }}>登出</button>
+          <button onClick={handleLogout} style={btnStyle}>登出</button>
         </div>
       </div>
 
@@ -227,13 +228,13 @@ export default function PersonalityFormPage() {
         flexDirection:'column',
         alignItems:'center',
         justifyContent:'flex-start',
-        paddingTop:'70px',
+        paddingTop: windowWidth < 500 ? '60px' : '70px',
         paddingBottom:'20px',
         gap:'15px'
       }}>
         <h2 style={{
-          fontSize: windowWidth < 500 ? '2rem' : '2.5rem',
-          color:'#8B4513',
+          fontSize: windowWidth < 500 ? '1.8rem' : '2rem',
+          color:'#934e1dff',
           textAlign:'center'
         }}>人格特質表單</h2>
 
@@ -241,17 +242,17 @@ export default function PersonalityFormPage() {
           <p style={{
             marginBottom:'20px',
             textAlign:'center',
-            color:'#555',
+            color:'#242222ff',
             lineHeight:'1.6',
-            fontSize: windowWidth < 500 ? '0.9rem' : '1rem'
+            fontSize: windowWidth < 500 ? '0.9rem' : '1.5rem'
           }}>
-            填寫此表單能協助 AI 更準確分析您的優勢，並打造與您特質相符的履歷優化建議，提升求職競爭力。
+            <b>填寫此表單能協助 AI 更準確分析您的優勢，並打造與您特質相符的履歷優化建議，提升求職競爭力。</b>
           </p>
 
           <form onSubmit={handleSubmit}>
             {questions.map(q => (
               <div key={q.id} style={{ marginBottom:'12px' }}>
-                <p>{q.text} <span style={{color:'red'}}>*</span></p>
+                <p style={{ fontSize: windowWidth < 500 ? '0.85rem' : '1rem' }}>{q.text} <span style={{color:'red'}}>*</span></p>
                 <select
                   name={`question${q.id}`}
                   value={formData[`question${q.id}`]}
@@ -264,19 +265,25 @@ export default function PersonalityFormPage() {
                   ))}
                 </select>
                 {touched[`question${q.id}`] && errors[`question${q.id}`] && (
-                  <div style={{color:'red', fontSize:'0.9rem'}}>{errors[`question${q.id}`]}</div>
+                  <div style={{color:'red', fontSize: windowWidth < 500 ? '0.75rem' : '0.9rem'}}>{errors[`question${q.id}`]}</div>
                 )}
               </div>
             ))}
 
             <div style={{ margin:'10px 0' }}>
-              <p>對於這份表單有任何想法，歡迎在下方區域留言</p>
+              <p style={{ fontSize: windowWidth < 500 ? '0.85rem' : '1rem' }}>對於這份表單有任何想法，歡迎在下方區域留言</p>
               <textarea
                 name="responseContext"
                 value={formData.responseContext}
                 onChange={handleChange}
                 placeholder="告訴我你的想法"
-                style={{ width:'100%', minHeight:'80px', padding:'8px', borderRadius:'8px', border:'1px solid #ccc', fontSize: windowWidth < 500 ? '0.9rem' : '1rem' }}
+                style={{ 
+                  width:'100%', minHeight:'80px', 
+                  padding: windowWidth < 500 ? '6px' : '8px', 
+                  borderRadius:'8px', 
+                  border:'1px solid #ccc', 
+                  fontSize: windowWidth < 500 ? '0.85rem' : '1rem' 
+                }}
               />
             </div>
 
@@ -285,7 +292,7 @@ export default function PersonalityFormPage() {
               <button type="button" onClick={resetForm} style={navBtnStyle}>重設</button>
             </div>
 
-            <div style={{ textAlign:'center', marginTop:'10px' }}>
+            <div style={{ textAlign:'center', marginTop:'10px', fontSize: windowWidth < 500 ? '0.85rem' : '0.95rem' }}>
               {isValid ? <span style={{color:'green'}}><b>資料填寫完畢，可以送出</b></span>
                         : <span style={{color:'red'}}><b>尚有錯誤或未填欄位</b></span>}
             </div>

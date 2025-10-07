@@ -14,7 +14,7 @@ const jobTitlesByCategory = {
   education: ['教師','教學設計','補教講師','教育科技工程師'],
   finance: ['財務分析師','風控 / 風險管理','會計','投資分析']
 };
-const genericTitles = ['工程師','專案經理','設計師','分析師','其他（自訂）'];
+const genericTitles = ['工程師','專案經理','設計師','分析師'];
 
 export default function Dashboard() {
   const [resumeText, setResumeText] = useState('');
@@ -25,7 +25,6 @@ export default function Dashboard() {
   const [status, setStatus] = useState('離線');
   const [jobCategory, setJobCategory] = useState('');
   const [jobTitle, setJobTitle] = useState('');
-  const [customJobTitle, setCustomJobTitle] = useState('');
   const navigate = useNavigate();
 
   const avatarColor = '#d89f76ff';
@@ -81,12 +80,62 @@ export default function Dashboard() {
     }
   };
 
-  const handleSubmit = () => {
-    if (!pdfFile) {
-      alert("請先上傳履歷！");
-      return;
+
+
+  // ✅ 修正了語法結構 (將 try/catch 包住所有邏輯)
+ const handleSubmit = async () => {
+  console.log("🚀 handleSubmit 被呼叫了");
+  console.log("📌 jobTitle:", jobTitle);
+  console.log("📌 pdfFile:", pdfFile);
+
+  const formData = new FormData();
+  formData.append("jobTitle", jobTitle);
+  formData.append("file", pdfFile);
+
+  try {
+    const response = await fetch("/api/resume/analyze", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`API 請求失敗 - 狀態碼: ${response.status}`);
     }
-    navigate('/analysis1', { state: { resumeFile: pdfFile, resumeText, jobCategory, jobTitle: jobTitle==='其他（自訂）'? customJobTitle : jobTitle } });
+
+    const result = await response.json();
+    console.log("✅ 後端回傳結果：", result);
+
+    navigate("/analyze", {
+      state: {
+        analysis: result,
+        jobTitle
+      }
+    });
+    } catch (error) {
+    console.error("分析失敗", error);
+    alert(`⚠️ 分析失敗，請稍後再試: ${error.message}`);
+  }
+};
+
+
+  //使用者職位儲存
+  const sendJobInfoToBackend = async () => {
+    try {
+      await fetch('/api/user/jobInfo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          
+          username: username, 
+          jobCategory: jobCategory,
+          jobTitle: jobTitle
+        })
+      });
+      console.log('✅ 職業資訊儲存成功');
+    } catch (error) {
+      console.error('儲存職業資訊失敗', error);
+      // 這裡不需要 alert，因為不影響主流程
+    }
   };
 
   const handleLogout = () => {
@@ -106,7 +155,7 @@ export default function Dashboard() {
       backgroundImage: `url(${bgImg})`,
       backgroundSize: 'cover'
     }}>
-     {/* Header */}
+      {/* Header */}
 <div style={{
   position: 'fixed',
   top: 0,
@@ -152,9 +201,14 @@ export default function Dashboard() {
     </div>
 
     {/* 名稱 + 狀態 */}
+    {/* 修正：使用狀態變數來顯示，而不是硬編碼 */}
     <div style={{ textAlign:'left' }}>
-        <div style={{ fontWeight:'600' }}>訪客登入</div>
-        <div style={{ fontSize:'0.9rem', color:'green' }}><b>狀態：在線</b></div>
+      <div style={{ fontWeight:'600' }}>
+        {username || '訪客'}
+      </div>
+      <div style={{ fontSize:'0.9rem', color: status === '在線' ? 'green' : '#888' }}>
+        <b>狀態：{status}</b>
+      </div>
     </div>
 
     {/* 登出按鈕 */}
@@ -199,7 +253,7 @@ export default function Dashboard() {
               <label style={{ display:'block', marginBottom:'8px', fontWeight:'600' }}>職業類別</label>
               <select 
                 value={jobCategory} 
-                onChange={(e)=>{ setJobCategory(e.target.value); setJobTitle(''); setCustomJobTitle(''); }} 
+                onChange={(e)=>{ setJobCategory(e.target.value); setJobTitle('');}} 
                 style={{ width:'100%', padding:'8px', borderRadius:'6px', border:'1px solid #ccc', fontSize:'1rem' }}
               >
                 <option value="">請選擇</option>
@@ -208,32 +262,25 @@ export default function Dashboard() {
                 <option value="design">設計</option>
                 <option value="education">教育</option>
                 <option value="finance">金融</option>
-                <option value="other">其他</option>
               </select>
             </div>
             <div style={{ minWidth:'180px' }}>
               <label style={{ display:'block', marginBottom:'8px', fontWeight:'600' }}>職稱</label>
               <select 
                 value={jobTitle} 
-                onChange={(e)=>{ setJobTitle(e.target.value); if(e.target.value!=='其他（自訂）') setCustomJobTitle(''); }} 
+                onChange={(e)=> setJobTitle(e.target.value)}
                 disabled={!jobCategory}
                 style={{ width:'100%', padding:'8px', borderRadius:'6px', border:'1px solid #ccc', fontSize:'1rem' }}
               >
                 <option value="">{jobCategory ? '請選擇職稱' : '請先選擇職業類別'}</option>
                 {currentTitles.map(t => <option key={t} value={t}>{t}</option>)}
-                <option value="其他（自訂）">其他（自訂）</option>
               </select>
-              {jobTitle==='其他（自訂）' && 
-                <input type="text" placeholder="請輸入職稱" value={customJobTitle} onChange={e=>setCustomJobTitle(e.target.value)} 
-                  style={{ marginTop:'8px', width:'100%', padding:'6px', borderRadius:'6px', border:'1px solid #ccc', textAlign:'center', fontSize:'1rem' }} />
-              }
             </div>
           </div>
 
           {/* 顯示選擇結果 */}
           <div style={{ marginBottom:'30px', padding:'12px', background:'#f9f9f9', border:'1px solid #ddd', borderRadius:'8px', fontSize:'1rem', fontWeight:'500', textAlign:'center' }}>
-            已選擇：類別：{jobCategory || '未選擇'} ／ 職稱：
-            {jobTitle==='其他（自訂）'? (customJobTitle || '尚未輸入') : jobTitle || '未選擇'}
+            已選擇：類別：{jobCategory || '未選擇'} ／ 職稱：{jobTitle || '未選擇'}
           </div>
 
           {/* 上傳履歷 */}
@@ -241,8 +288,33 @@ export default function Dashboard() {
             <h3 style={{ color:'#6F4E37', fontSize: '40px', textAlign: 'center', marginBottom: '25px' }}>上傳履歷</h3>
             <FileUpload setResumeText={setResumeText} setResumeFile={handleFileUpload} />
             <div style={{ marginTop: '18px' }}>
-              <button onClick={() => setShowPreview(true)} disabled={!pdfFile} style={{ padding: "10px 20px", background: pdfFile ? "#6F4E37" : "#cc8d60ff", color:"#fff", border:"none", borderRadius:"8px", cursor: pdfFile ? "pointer" : "not-allowed", marginRight:'12px' }}>預覽履歷</button>
-              <button onClick={handleSubmit} disabled={!pdfFile} style={{ padding: "10px 20px", background: pdfFile ? "#6F4E37" : "#cc8d60ff", color:"#fff", border:"none", borderRadius:"8px", cursor: pdfFile ? "pointer" : "not-allowed" }}>提交履歷</button>
+              <button 
+                onClick={() => setShowPreview(true)} 
+                disabled={!pdfFile} 
+                style={{ 
+                  padding: "10px 20px", 
+                  background: pdfFile ? "#6F4E37" : "#cc8d60ff", 
+                  color:"#fff", 
+                  border:"none", 
+                  borderRadius:"8px", 
+                  cursor: pdfFile ? "pointer" : "not-allowed", 
+                  marginRight:'12px' 
+                }}>
+                  預覽履歷
+              </button>
+              <button 
+                onClick={handleSubmit} 
+                disabled={!pdfFile} 
+                style={{ 
+                  padding: "10px 20px", 
+                  background: pdfFile ? "#6F4E37" : "#cc8d60ff", 
+                  color:"#fff", 
+                  border:"none", 
+                  borderRadius:"8px", 
+                  cursor: pdfFile ? "pointer" : "not-allowed" 
+                }}>
+                  提交履歷
+              </button>
             </div>
           </div>
         </div>
@@ -265,7 +337,7 @@ export default function Dashboard() {
       {/* PDF 預覽 */}
       {showPreview && pdfFile && (
         <>
-          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)" }} onClick={() => setShowPreview(false)} />
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", zIndex: 999 }} onClick={() => setShowPreview(false)} />
           <div style={{ position: "fixed", top: "50%", left: "50%", transform:"translate(-50%, -50%)", background:"white", padding:"20px", borderRadius:"12px", zIndex:1000, width:"90%", maxWidth:"1000px", maxHeight:"90%", overflow:"auto" }}>
             <ResumePreview file={pdfFile} text={resumeText} style={{ width: "100%", height: "80vh" }} />
             <div style={{ textAlign:"right" }}>

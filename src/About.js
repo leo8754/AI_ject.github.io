@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bgImg from './components/background.jpg';
 
@@ -12,7 +12,18 @@ function About() {
     if (ref.current) ref.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // ===== 狀態管理 =====
+  // ===== 響應式監聽 (來自組員的版本) =====
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 600;
+  const isTablet = windowWidth >= 600 && windowWidth < 900;
+
+  // ===== 狀態管理 (您的版本) =====
   const [regUsername, setRegUsername] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regEmail, setRegEmail] = useState('');
@@ -29,7 +40,7 @@ function About() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
 
-  // ===== 註冊功能 =====
+  // ===== 註冊功能 (您的版本) =====
   const handleRegister = () => {
     if (!regUsername || !regPassword || !regEmail || !regCode) {
       setRegErrorMsg('請完整填寫所有欄位');
@@ -69,7 +80,7 @@ function About() {
     alert(`驗證碼已寄送至 ${regEmail}\n(測試用代碼: ${code})`);
   };
 
-  // ===== 登入功能 =====
+  // ===== 登入功能 (您的版本) =====
   const handleLogin = () => {
     if (!loginUsername || !loginPassword) {
       setLoginErrorMsg('請輸入使用者名稱與密碼');
@@ -94,10 +105,10 @@ function About() {
   const handleGuestLogin = () => {
     setLoginSuccessMsg('以訪客身份登入');
     setShowLogin(false);
-    navigate('/first', { state: { username: "訪客" } });
+    navigate('/Visitors', { state: { username: "訪客" } });
   };
 
-  // ===== 樣式 =====
+  // ===== 樣式 (已加入組員的響應式邏輯) =====
   const containerStyle = {
     minHeight: '100vh',
     display: 'flex',
@@ -111,9 +122,12 @@ function About() {
 
   const headerStyle = {
     display: 'flex',
+    // 響應式修改
+    flexDirection: isMobile ? 'column' : 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '20px 50px',
+    // 響應式修改
+    padding: isMobile ? '10px 20px' : '20px 50px',
     backgroundColor: 'rgba(255,255,255,0.6)',
     backdropFilter: 'blur(8px)',
     WebkitBackdropFilter: 'blur(8px)',
@@ -127,14 +141,21 @@ function About() {
 
   const navStyle = {
     display: 'flex',
-    gap: '20px',
+    // 響應式修改
+    flexDirection: isMobile ? 'column' : 'row',
+    // 響應式修改
+    gap: isMobile ? '10px' : '20px',
     fontWeight: 'bold',
     cursor: 'pointer',
-    color: '#6F4E37'
+    color: '#6F4E37',
+    // 響應式修改
+    alignItems: isMobile ? 'flex-start' : 'center',
+    marginTop: isMobile ? '10px' : '0' // 響應式修改
   };
 
   const buttonStyle = {
-    padding: '10px 20px',
+    // 響應式修改
+    padding: isMobile ? '6px 12px' : '10px 20px',
     marginLeft: '10px',
     border: 'none',
     borderRadius: '5px',
@@ -160,7 +181,8 @@ function About() {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    padding: '120px 50px 50px'
+    // 響應式修改
+    padding: isMobile ? '140px 20px 50px' : '120px 50px 50px'
   };
 
   const contentStyle = {
@@ -168,11 +190,12 @@ function About() {
     textAlign: 'left'
   };
 
-  // ===== 卡片玻璃風格 =====
+  // ===== 卡片玻璃風格 (已加入組員的響應式邏輯) =====
   const cardStyle = {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: '20px',
-    padding: '30px 35px',
+    // 響應式修改
+    padding: isMobile ? '20px 20px' : '30px 35px',
     marginBottom: '25px',
     boxShadow: '0 6px 18px rgba(0,0,0,0.1)',
     transition: 'transform 0.3s, boxShadow 0.3s',
@@ -207,14 +230,18 @@ function About() {
   };
 
   const h2Style = {
-    color: '#6F4E37'
+    color: '#6F4E37',
+    // 響應式修改
+    fontSize: isMobile ? '1.5rem' : isTablet ? '1.8rem' : '2rem'
   };
 
   const footerStyle = {
-    padding: '20px 0',
+    // 響應式修改
+    padding: isMobile ? '10px 0' : '20px 0',
     backgroundColor: 'rgba(255,255,255,0.3)',
     textAlign: 'center',
-    fontSize: '0.9em',
+    // 響應式修改
+    fontSize: isMobile ? '0.75em' : '0.9em',
     color: '#171514ff',
     borderRadius: '10px',
     boxShadow: '0 -4px 10px rgba(255,255,255,0.3)',
@@ -237,15 +264,19 @@ function About() {
 
   const modalContentStyle = {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    padding: '30px',
+    // 響應式修改
+    padding: isMobile ? '20px' : '30px',
     borderRadius: '15px',
-    width: '400px',
+    // 響應式修改
+    width: isMobile ? '85%' : '400px',
     textAlign: 'center',
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
     border: '1px solid rgba(255, 255, 255, 0.3)',
     boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
-    color: '#333'
+    color: '#333',
+    // 響應式修改
+    fontSize: isMobile ? '0.85rem' : '1rem'
   };
 
   const modalStyle = {
@@ -262,7 +293,8 @@ function About() {
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255,255,255,0.6)', zIndex: 0 }} />
       <div style={{ position: 'relative', zIndex: 1 }}>
         <header style={headerStyle}>
-          <div style={{ fontWeight: 'bold', fontSize: '2.5em', color: '#6F4E37', cursor: 'pointer' }} onClick={() => navigate('/')}>
+          {/* 響應式修改 */}
+          <div style={{ fontWeight: 'bold', fontSize: isMobile ? '1.8rem' : '2.5em', color: '#6F4E37', cursor: 'pointer' }} onClick={() => navigate('/')}>
             AI 履歷健診
           </div>
           <nav style={navStyle}>
@@ -274,7 +306,8 @@ function About() {
               聯絡我們
             </div>
           </nav>
-          <div>
+          {/* 響應式修改 */}
+          <div style={{ marginTop: isMobile ? '10px' : '0' }}>
             <button style={loginButton} onClick={() => setShowLogin(true)}>登入</button>
             <button style={registerButton} onClick={() => setShowRegister(true)}>註冊</button>
           </div>
@@ -285,7 +318,8 @@ function About() {
             {/* 關於我們（卡片內） */}
             <div style={cardStyle} onMouseEnter={e => Object.assign(e.currentTarget.style, cardHoverStyle)} onMouseLeave={e => Object.assign(e.currentTarget.style, cardStyle)}>
               <h2 ref={aboutwe} style={h2Style}>關於我們</h2>
-              <p style={{ fontSize: '1.1rem' }}>
+              {/* 響應式修改 */}
+              <p style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>
                 最智慧的AI分析，最專業的履歷健診。
                 我們打造數據化、專業化的專業建議，協助求職者精準檢視履歷，
                 發揮優勢、改善不足，快速提升競爭力。
@@ -296,10 +330,12 @@ function About() {
             <h2 ref={productRef} style={h2Style}>產品亮點</h2>
             {[...Array(4).keys()].map(i => (
               <div key={i} style={cardStyle} onMouseEnter={e => Object.assign(e.currentTarget.style, cardHoverStyle)} onMouseLeave={e => Object.assign(e.currentTarget.style, cardStyle)}>
-                <strong style={{ fontSize: '1.2rem', color: '#000' }}>
+                {/* 響應式修改 */}
+                <strong style={{ fontSize: isMobile ? '1rem' : '1.2rem', color: '#000' }}>
                   {["AI履歷評分","精準職缺匹配","專業優化建議","我們的願景"][i]}
                 </strong>
-                <p style={{ marginTop: '8px', fontSize: '1rem' }}>
+                {/* 響應式修改 */}
+                <p style={{ marginTop: '8px', fontSize: isMobile ? '0.85rem' : '1rem' }}>
                   {[
                     "即時分析履歷分數，清楚知道優點與缺點",
                     "依照你的專業背景，自動推薦最適合的工作",
@@ -320,8 +356,10 @@ function About() {
                 { name: 'Michael', role: '表單 / 整合' }
               ].map((member, idx) => (
                 <div key={idx} style={teamCardStyle} onMouseEnter={e => Object.assign(e.currentTarget.style, teamCardHover)} onMouseLeave={e => Object.assign(e.currentTarget.style, teamCardStyle)}>
-                  <strong style={{ fontSize: '1.1rem' }}>{member.name}</strong>
-                  <p style={{ marginTop: '5px', fontSize: '0.95rem' }}>{member.role}</p>
+                  {/* 響應式修改 */}
+                  <strong style={{ fontSize: isMobile ? '1rem' : '1.1rem' }}>{member.name}</strong>
+                  {/* 響應式修改 */}
+                  <p style={{ marginTop: '5px', fontSize: isMobile ? '0.8rem' : '0.95rem' }}>{member.role}</p>
                 </div>
               ))}
             </div>
@@ -329,6 +367,7 @@ function About() {
           </div>
         </main>
 
+        {/* Footer */}
         <footer style={footerStyle}>
           2025 程式驅動 AI 履歷健診團隊 版權所有 | 聯絡我們: contact@airesume.com
         </footer>
@@ -363,7 +402,6 @@ function About() {
             {regSuccessMsg && <p style={{ color: 'green' }}>{regSuccessMsg}</p>}
           </div>
         )}
-
       </div>
     </div>
   );

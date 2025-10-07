@@ -16,7 +16,7 @@ public class RegisterController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/user/create-old")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
 
         // ✅ 檢查 email 或 phone 是否重複

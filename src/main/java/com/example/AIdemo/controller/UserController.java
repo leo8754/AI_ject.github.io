@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.AIdemo.dto.JobInfoRequest;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,7 +23,7 @@ public class UserController {
     private EmailService emailService;
 
     // ✅ 註冊邏輯（驗證碼比對 + 資料儲存）
-    @PostMapping("/api/register")
+    @PostMapping("/api/user/create-old")
     public ResponseEntity<?> register(@RequestBody User user) {
         Optional<User> existing = userRepository.findByEmail(user.getEmail());
         if (existing.isEmpty()) {
@@ -78,4 +80,20 @@ public class UserController {
         System.out.println("驗證碼已寄出：" + email + " ➜ " + code);
         return ResponseEntity.ok("驗證碼已寄出");
     }
+    
+    //用戶的職業資訊
+    @PostMapping("/api/user/jobInfo")
+    public ResponseEntity<?> saveJobInfo(@RequestBody JobInfoRequest request) {
+    Optional<User> optionalUser = userRepository.findByUsername(request.getUsername());
+    if (optionalUser.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    User user = optionalUser.get();
+    user.setJobCategory(request.getJobCategory());
+    user.setJobTitle(request.getJobTitle());
+    userRepository.save(user);
+
+    return ResponseEntity.ok().build();
+}
 }

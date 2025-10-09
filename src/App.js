@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import Home from './Home';
 import Visitors from './Visitors'; 
 import Analysis1 from './Analysis1';
@@ -16,6 +16,7 @@ function App() {
   const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
 
   return (
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -31,6 +32,7 @@ function App() {
         <Route path="/users" element={<Users />} />
       </Routes>
     </Router>
+    </BrowserRouter>
   );
 }
 

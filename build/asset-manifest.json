@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/static/css/main.1c893ecc.css",
-    "main.js": "/static/js/main.369fc0c7.js",
-    "static/js/977.184752ec.chunk.js": "/static/js/977.184752ec.chunk.js",
-    "static/js/455.270df42b.chunk.js": "/static/js/455.270df42b.chunk.js",
-    "static/media/background.jpg": "/static/media/background.756fc40bfa03dab6b7b3.jpg",
-    "index.html": "/index.html",
-    "main.1c893ecc.css.map": "/static/css/main.1c893ecc.css.map",
-    "main.369fc0c7.js.map": "/static/js/main.369fc0c7.js.map",
-    "977.184752ec.chunk.js.map": "/static/js/977.184752ec.chunk.js.map",
-    "455.270df42b.chunk.js.map": "/static/js/455.270df42b.chunk.js.map"
+    "main.css": "/AI_ject.github.io/static/css/main.1c893ecc.css",
+    "main.js": "/AI_ject.github.io/static/js/main.341f0020.js",
+    "static/js/977.184752ec.chunk.js": "/AI_ject.github.io/static/js/977.184752ec.chunk.js",
+    "static/js/455.270df42b.chunk.js": "/AI_ject.github.io/static/js/455.270df42b.chunk.js",
+    "static/media/background.jpg": "/AI_ject.github.io/static/media/background.756fc40bfa03dab6b7b3.jpg",
+    "index.html": "/AI_ject.github.io/index.html",
+    "main.1c893ecc.css.map": "/AI_ject.github.io/static/css/main.1c893ecc.css.map",
+    "main.341f0020.js.map": "/AI_ject.github.io/static/js/main.341f0020.js.map",
+    "977.184752ec.chunk.js.map": "/AI_ject.github.io/static/js/977.184752ec.chunk.js.map",
+    "455.270df42b.chunk.js.map": "/AI_ject.github.io/static/js/455.270df42b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1c893ecc.css",
-    "static/js/main.369fc0c7.js"
+    "static/js/main.341f0020.js"
   ]
 }

@@ -2,12 +2,13 @@
   "name": "resume-ai-demo",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://leo8754.github.io/AI_ject.github.io",
+  "homepage": "https://leo8754.github.io/AI_ject.github.io/",
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
     "framer-motion": "^12.23.21",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.3",
+    "lucide-react": "^0.544.0",
     "mammoth": "^1.11.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.4.149",
@@ -27,7 +28,10 @@
   },
   "devDependencies": {
     "@babel/plugin-transform-class-properties": "^7.x.x",
-    "gh-pages": "^6.3.0"
+    "autoprefixer": "^10.4.21",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14"
   },
   "browserslist": {
     "production": [
@@ -40,5 +44,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:8080"
 }

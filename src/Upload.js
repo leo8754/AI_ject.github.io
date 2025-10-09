@@ -14,37 +14,32 @@ export default function Dashboard() {
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
 
-  // ---------------- 讀取登入者 ----------------
   useEffect(() => {
     const savedUser = localStorage.getItem('username');
     if (savedUser) setUsername(savedUser);
   }, []);
 
-  // ---------------- 顏色頭像 ----------------
-  const colors = ["#007bff"];
+  const colors = ['#6F4E37'];
   const avatarColor = useMemo(() => {
     if (!username) return colors[0];
     const charCode = username.charCodeAt(0);
     return colors[charCode % colors.length];
   }, [username]);
 
-  // ---------------- 登出 ----------------
   const handleLogout = () => {
     localStorage.removeItem('username');
     navigate('/');
   };
 
-  // ---------------- 提交履歷 ----------------
   const handleSubmit = () => {
     if (!pdfFile) {
       alert('請先上傳履歷');
       return;
     }
-    const score = Math.floor(Math.random() * 41) + 60; // 60-100分
+    const score = Math.floor(Math.random() * 41) + 60;
     navigate('/analyze', { state: { resumeFile: pdfFile, resumeText, score } });
   };
 
-  // ---------------- 上傳 Word / PDF ----------------
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -80,7 +75,11 @@ export default function Dashboard() {
       const pdfBlob = pdf.output('blob');
       document.body.removeChild(div);
 
-      const pdfFile = new File([pdfBlob], file.name.replace(/\.(docx?|DOCX?)$/, '.pdf'), { type: 'application/pdf' });
+      const pdfFile = new File(
+        [pdfBlob],
+        file.name.replace(/\.(docx?|DOCX?)$/, '.pdf'),
+        { type: 'application/pdf' }
+      );
       setPdfFile(pdfFile);
       setResumeFile(pdfFile);
       setLoading(false);
@@ -91,137 +90,207 @@ export default function Dashboard() {
   };
 
   return (
-    <div style={{
-      fontFamily: '"Microsoft JhengHei", sans-serif',
-      color: '#000',
-      backgroundImage: `url(${bgImg})`,
-      backgroundSize: 'cover',
-      minHeight: '100vh',
-      padding: '30px',
-      boxSizing: 'border-box',
-      paddingBottom: '120px' // 預留 footer 空間
-    }}>
-      {/* Header */}
-      <div style={{
-        position: 'fixed', top: 0, left: 0, width: '100%',
-        background: 'rgba(255,255,255,0.85)',
-        padding: '20px 40px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        zIndex: 100,
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <h1 style={{ margin: 0, color: '#8B4513', fontWeight: '700', fontSize: '2.5rem' }}>AI 履歷健診</h1>
-
-        {/* 右上角頭像 + 狀態 + 回首頁按鈕 */}
-        <div style={{
-          position: 'absolute',
-          top: '20px',
-          right: '80px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '5px'
-        }}>
-          {/* 頭像 */}
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              backgroundColor: avatarColor,
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-              fontSize: "18px",
-            }}
-          >
-            {username ? username.charAt(0).toUpperCase() : "?"}
+    <div className="dashboard">
+      <header className="header">
+        <h1>AI 履歷健診</h1>
+        <div className="user-info">
+          <div className="avatar" style={{ backgroundColor: avatarColor }}>
+            {username ? username.charAt(0).toUpperCase() : '?'}
           </div>
-
-          {/* 狀態文字 */}
-          <div>
-            <div style={{ fontWeight: '600' }}>{username}</div>
-            <div style={{ fontSize: '0.9rem', color: 'green' }}><b>狀態：在線</b></div>
+          <div className="status">
+            <div className="username">{username}</div>
+            <div className="online">
+              <b>狀態：在線</b>
+            </div>
           </div>
-
-          {/* 回首頁按鈕 */}
-          <button onClick={handleLogout} style={{ ...btnStyle }}>回首頁</button>
+          <button onClick={handleLogout} className="logout-btn">
+            登出
+          </button>
         </div>
-      </div>
+      </header>
 
-      {/* 上傳區卡片 */}
-      <div style={{
-        background: '#fdfdfd',
-        padding: '20px',
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        marginTop: '120px',
-        maxWidth: '500px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        textAlign: 'center'
-      }}>
-        <p style={{ marginBottom: '12px', color: '#555' }}>
+      <main className="upload-card">
+        <p>
           歡迎使用 AI 履歷健診！<br />
           請上傳您的 Word 或 PDF 履歷，我們將自動分析並給出建議。
         </p>
-
         <input type="file" accept=".doc,.docx,.pdf" onChange={handleFileUpload} />
-
-        {loading && <p style={{ color: '#007bff', marginTop: '10px' }}>履歷處理中，請稍候...</p>}
-
-        <div style={{ marginTop: '12px' }}>
+        {loading && <p className="loading-text">履歷處理中，請稍候...</p>}
+        <div className="submit-btn-wrapper">
           <button
             onClick={handleSubmit}
             disabled={!pdfFile || loading}
-            style={{
-              padding: '10px 20px',
-              background: pdfFile ? '#ffc107' : '#e0d3a5',
-              color: '#000',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: pdfFile ? 'pointer' : 'not-allowed'
-            }}>
+            className="submit-btn"
+          >
             提交履歷 & 立即分析
           </button>
         </div>
-
-        <div style={{ marginTop: '20px', fontSize: '0.85rem', color: '#666', textAlign: 'left' }}>
+        <div className="tips">
           <strong>小提醒：</strong><br />
           1. 履歷中多用量化成果（例如完成過2個專案）。<br />
           2. 簡潔明瞭的自我介紹更容易被 AI 分析抓到重點。
         </div>
-      </div>
+      </main>
 
-      {/* Footer */}
-      <footer style={footerStyle}>
+      <footer className="footer">
         2025 程式驅動 AI 履歷健診團隊 版權所有 | 聯絡我們: contact@airesume.com
       </footer>
+
+      <style jsx>{`
+        .dashboard {
+          font-family: "Microsoft JhengHei", sans-serif;
+          color: #000;
+          background-image: url(${bgImg});
+          background-size: cover;
+          background-position: center;
+          background-attachment: fixed;
+          min-height: 100vh;
+          padding: 120px 20px 120px 20px;
+          box-sizing: border-box;
+        }
+        .header {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          background: rgba(255, 255, 255, 0.85);
+          padding: 15px 30px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          z-index: 100;
+          flex-wrap: wrap;
+        }
+        .header h1 {
+          margin: 0;
+          color: #6f4e37;
+          font-weight: 700;
+          text-align:left;
+          font-size: 2rem;
+        }
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-right: 45px;
+        }
+        .avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #6f4e37;
+          color: white;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-weight: bold;
+          font-size: 18px;
+        }
+        .status .username {
+          font-weight: 600;
+        }
+        .status .online {
+          font-size: 0.9rem;
+          color: green;
+        }
+        .logout-btn {
+          padding: 8px 16px;
+          background: #dc3545;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+        .upload-card {
+          background: #fdfdfd;
+          padding: 20px;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          margin: 140px auto 0 auto;
+          max-width: 500px;
+          text-align: center;
+        }
+        .upload-card p {
+          margin-bottom: 12px;
+          color: #555;
+        }
+        .loading-text {
+          color: #6f4e37;
+          margin-top: 10px;
+        }
+        .submit-btn-wrapper {
+          margin-top: 12px;
+        }
+        .submit-btn {
+          padding: 10px 20px;
+          background: #c26624ff;
+          color: #000;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+        }
+        .submit-btn:disabled {
+          background: #d6874eff;
+          cursor: not-allowed;
+        }
+        .tips {
+          margin-top: 20px;
+          font-size: 0.85rem;
+          color: #666;
+          text-align: left;
+        }
+        .footer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          text-align: center;
+          padding: 15px 10px;
+          background: rgba(255, 255, 255, 0.9);
+          border-top: 1px solid #ddd;
+          font-size: 0.9rem;
+          color: #555;
+          z-index: 99;
+        }
+
+        /* === 響應式 === */
+        @media (max-width: 768px) {
+          .header h1 {
+            font-size: 1.8rem;
+          }
+          .user-info {
+            flex-wrap: wrap;
+            margin-top: 8px;
+            gap: 5px;
+          }
+          .upload-card {
+            margin: 160px 10px 0 10px;
+            padding: 15px;
+          }
+        }
+        @media (max-width: 480px) {
+          .header h1 {
+            font-size: 1.5rem;
+          }
+          .avatar {
+            width: 35px;
+            height: 35px;
+            font-size: 16px;
+          }
+          .logout-btn {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+          }
+          .submit-btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+          }
+          .tips {
+            font-size: 0.8rem;
+          }
+        }
+      `}</style>
     </div>
   );
 }
-
-const btnStyle = {
-  padding: '8px 16px',
-  background: '#dc3545',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '6px',
-  cursor: 'pointer'
-};
-
-const footerStyle = {
-  position: 'fixed',
-  bottom: 0,
-  left: 0,
-  width: '100%',
-  textAlign: 'center',
-  padding: '15px 10px',
-  background: 'rgba(255,255,255,0.9)',
-  borderTop: '1px solid #ddd',
-  fontSize: '0.9rem',
-  color: '#555',
-  zIndex: 99
-};

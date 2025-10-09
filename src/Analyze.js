@@ -57,7 +57,7 @@ export default function Analyze() {
           onClick={() => navigate('/')} 
           style={{
             padding:'8px 16px',
-            background:'#007bff',
+            background:'#6F4E37',
             color:'#fff',
             border:'none',
             borderRadius:'6px',
@@ -97,7 +97,7 @@ export default function Analyze() {
 
         {/* 改善建議 */}
         <div style={{ marginTop:'20px' }}>
-          <h3 style={{ color:'#ffc107' }}>改善建議</h3>
+          <h3 style={{ color:'#3407ffff' }}>改善建議</h3>
           <ul>
             {analysis.suggestions.map((item, index) => (
               <li key={index}>{item}</li>

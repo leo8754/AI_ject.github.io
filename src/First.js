@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import bgImg from './components/background.jpg'; // 統一背景圖
+import bgImg from './components/background.jpg';
 
 export default function Dashboard() {
   const [jobCategory, setJobCategory] = useState('');
@@ -19,8 +19,7 @@ export default function Dashboard() {
     navigate('/');
   };
 
-  // ---------------- 顏色頭像 ----------------
-  const colors = ["#007bff"];
+  const colors = ["#6F4E37"];
   const avatarColor = useMemo(() => {
     if (!username) return colors[0];
     const charCode = username.charCodeAt(0);
@@ -45,37 +44,47 @@ export default function Dashboard() {
       backgroundImage:`url(${bgImg})`,
       backgroundSize:'cover',
       minHeight:'100vh',
-      padding:'30px',
+      padding:'30px 20px',
       boxSizing:'border-box',
-      paddingBottom:'80px'
+      paddingBottom:'100px'
     }}>
-      
-      {/* Header 固定置頂 */}
+
+      {/* Header 固定左上角 */}
       <div style={{ 
         position:'fixed', 
         top:0, 
         left:0, 
         width:'100%', 
         background:'rgba(255,255,255,0.85)', 
-        padding:'20px 40px', 
+        padding:'12px 15px', 
         boxShadow:'0 2px 8px rgba(0,0,0,0.1)', 
         zIndex:100, 
         display:'flex', 
-        justifyContent:'space-between', 
-        alignItems:'center' 
+        justifyContent:'space-between',
+        alignItems:'center',
+        flexWrap:'wrap'
       }}>
-        <h1 style={{ margin:0, color:'#8B4513', fontWeight:'700', fontSize:'2.5rem' }}>AI 履歷健診</h1>
-        
-        {/* 右上角頭像 + 狀態 + 回首頁按鈕 */}
+        {/* 標題靠左 */}
+        <h1 style={{ 
+          margin:0, 
+          color:'#6F4E37', 
+          fontWeight:'700', 
+          fontSize:'2rem', 
+          textAlign:'left',
+          flex:1,
+          minWidth:'180px'
+        }}>
+          AI 履歷健診
+        </h1>
+
+        {/* 頭像 + 名稱/狀態 */}
         <div style={{
-          position: 'absolute',
-          top: '20px',
-          right: '40px',
           display: 'flex',
           alignItems: 'center',
-          gap: '5px'
+          gap: '8px',
+          marginTop:'10px',
+          marginRight: '40px'
         }}>
-          {/* 頭像 */}
           <div
             style={{
               width: "40px",
@@ -88,27 +97,42 @@ export default function Dashboard() {
               justifyContent: "center",
               fontWeight: "bold",
               fontSize: "18px",
+              flexShrink:0
             }}
           >
             {username ? username.charAt(0).toUpperCase() : "?"}
           </div>
-          <div style={{ display:'flex', alignItems:'center', gap:'16px', marginRight: '40px' }}>
-            <div style={{ textAlign:'left' }}>
-              <div style={{ fontWeight:'600' }}>{username}</div>
-              <div style={{ fontSize:'0.9rem', color:'green' }}><b>狀態：在線</b></div>
-            </div>
-            <button onClick={handleLogout} style={btnStyle}>登出</button>
+
+          <div style={{ textAlign:'left', minWidth:'0px' }}>
+            <div style={{ fontWeight:'700', fontSize:'0.9rem', overflowWrap:'anywhere' }}>{username}</div>
+            <div style={{ fontSize:'1.0rem', color:'green' }}><b>狀態：在線</b></div>
           </div>
+
+          <button onClick={handleLogout} style={{...btnStyle, padding:'6px 12px', fontSize:'0.85rem'}}>登出</button>
         </div>
       </div>
 
       {/* 主內容 */}
       <div style={{ paddingTop:'100px', maxWidth:'820px', margin:'0 auto' }}>
-        <div style={{ background:'#fff', padding:'20px', borderRadius:'10px', boxShadow:'0 2px 8px rgba(0,0,0,0.15)' }}>
-          <h2>選擇職業資訊</h2>
-          <div style={{ display:'flex', gap:'16px', flexWrap:'wrap' }}>
-            <div>
-              <label style={{ display:'block', marginBottom:'4px' }}>職業類別</label>
+        <div style={{ 
+          background:'rgba(255,255,255,0.3)', 
+          backdropFilter:'blur(10px)',        
+          WebkitBackdropFilter:'blur(10px)',  
+          padding:'20px', 
+          borderRadius:'12px', 
+          boxShadow:'0 2px 12px rgba(0,0,0,0.15)',
+          textAlign: 'center'
+        }}>
+          <h2 style={{ color: '#6F4E37', fontSize: '32px', marginBottom:'20px' }}>選擇職業資訊</h2>
+          <div style={{ 
+            display:'flex', 
+            gap:'12px', 
+            flexWrap:'wrap', 
+            justifyContent:'center', 
+            marginTop:'10px'
+          }}>
+            <div style={{ minWidth:'140px', flex:'1 1 140px' }}>
+              <label style={{ display:'block', marginBottom:'6px' }}>職業類別</label>
               <select 
                 value={jobCategory} 
                 onChange={(e)=>{ 
@@ -116,6 +140,7 @@ export default function Dashboard() {
                   setJobTitle(''); 
                   setCustomJobTitle(''); 
                 }}
+                style={{ width:'100%', padding:'6px', borderRadius:'6px', fontSize:'0.9rem' }}
               >
                 <option value="">請選擇</option>
                 <option value="it">資訊科技 (IT)</option>
@@ -126,8 +151,8 @@ export default function Dashboard() {
                 <option value="other">其他</option>
               </select>
             </div>
-            <div>
-              <label style={{ display:'block', marginBottom:'4px' }}>職稱</label>
+            <div style={{ minWidth:'140px', flex:'1 1 140px' }}>
+              <label style={{ display:'block', marginBottom:'6px' }}>職稱</label>
               <select 
                 value={jobTitle} 
                 onChange={(e)=>{ 
@@ -135,6 +160,7 @@ export default function Dashboard() {
                   if(e.target.value!=='其他（自訂）') setCustomJobTitle(''); 
                 }} 
                 disabled={!jobCategory}
+                style={{ width:'100%', padding:'6px', borderRadius:'6px', fontSize:'0.9rem' }}
               >
                 <option value="">{jobCategory ? '請選擇職稱' : '請先選擇職業類別'}</option>
                 {currentTitles.map(t=><option key={t} value={t}>{t}</option>)}
@@ -146,25 +172,51 @@ export default function Dashboard() {
                   placeholder="請輸入職稱" 
                   value={customJobTitle} 
                   onChange={e=>setCustomJobTitle(e.target.value)} 
-                  style={{ marginTop:'6px', display:'block' }}
+                  style={{ marginTop:'6px', display:'block', width:'100%', textAlign:'center', padding:'6px', borderRadius:'6px' }}
                 />
               }
             </div>
           </div>
-          <div style={{ marginTop:'12px', padding:'8px', background:'#f9f9f9', border:'1px solid #ddd', borderRadius:'6px' }}>
+          <div style={{ 
+            marginTop:'20px', 
+            padding:'10px', 
+            background:'#f9f9f9', 
+            border:'1px solid #ddd', 
+            borderRadius:'8px',
+            textAlign: 'center',
+            fontSize:'0.9rem'
+          }}>
             已選擇：類別：{jobCategory || '未選擇'} ／ 職稱：{jobTitle==='其他（自訂）'? (customJobTitle || '尚未輸入') : jobTitle || '未選擇'}
           </div>
         </div>
 
-        {/* 頁面導航 */}
-        <div style={{ marginTop:'30px', display:'flex', justifyContent:'space-between' }}>
-          <button onClick={()=>navigate('/')} style={navBtnStyle}>← 上一步</button>
-          <button onClick={()=>navigate('/FormPage')} style={navBtnStyle}>下一步 →</button>
+        <div style={{ 
+          marginTop:'25px', 
+          display:'flex', 
+          justifyContent:'center', 
+          gap:'12px', 
+          flexWrap:'wrap'
+        }}>
+          <button onClick={()=>navigate('/')} style={{...navBtnStyle, width:'90px'}}>← 上一步</button>
+          <button onClick={()=>navigate('/FormPage1')} style={{...navBtnStyle, width:'90px'}}>下一步 →</button>
         </div>
       </div>
 
-      {/* Footer 固定在最下方 */}
-      <footer style={footerStyle}>
+      {/* Footer */}
+      <footer style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        textAlign: 'center',
+        padding: '12px 10px',
+        background: 'rgba(255,255,255,0.9)',
+        borderTop: '1px solid #ddd',
+        fontSize: '0.85rem',
+        color: '#555',
+        zIndex: 99,
+        wordBreak:'break-word'
+      }}>
         2025 程式驅動 AI 履歷健診團隊 版權所有 | 聯絡我們: contact@airesume.com
       </footer>
     </div>
@@ -177,28 +229,16 @@ const btnStyle = {
   color:'#fff',
   border:'none',
   borderRadius:'6px',
-  cursor:'pointer'
+  cursor:'pointer',
+  fontSize:'0.9rem'
 };
 
 const navBtnStyle = {
-  padding:'10px 20px',
-  background:'#007bff',
+  padding:'10px 4px',
+  background:'#6F4E37',
   color:'#fff',
   border:'none',
-  borderRadius:'8px',
-  cursor:'pointer'
-};
-
-const footerStyle = {
-  position: 'fixed',
-  bottom: 0,
-  left: 0,
-  width: '100%',
-  textAlign: 'center',
-  padding: '15px 10px',
-  background: 'rgba(255,255,255,0.9)',
-  borderTop: '1px solid #ddd',
-  fontSize: '0.9rem',
-  color: '#555',
-  zIndex: 99
+  borderRadius:'6px',
+  cursor:'pointer',
+  fontSize:'0.9rem'
 };

@@ -1,0 +1,38 @@
+.register-page {
+  padding: 50px;
+  max-width: 500px;
+  margin: auto;
+}
+
+.register-form input,
+.register-form select {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+}
+
+.verify-block {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.captcha-block {
+  margin-top: 20px;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+.success {
+  color: green;
+  font-weight: bold;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+}

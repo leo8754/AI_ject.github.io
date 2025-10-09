@@ -113,6 +113,7 @@ export default function Analyze() {
       }}>
         2025 程式驅動 AI 履歷健診團隊 版權所有 | 聯絡我們: contact@airesume.com
       </footer>
+
     </div>
   );
 }

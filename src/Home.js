@@ -168,6 +168,7 @@ function Home() {
 
   const listCardHover = { transform: 'scale(1.02)' };
 
+  // ===== Modal Glass Style =====
   const modalOverlayStyle = {
     position: 'fixed',
     top: 0,
